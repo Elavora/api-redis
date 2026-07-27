@@ -85,16 +85,20 @@ final class RedisIntegrationTest extends TestCase
         return $port === false ? 6379 : (int) $port;
     }
 
-    private function password(): string
+    private function password(): ?string
     {
-        return getenv('REDIS_PASSWORD') ?: 'integration-secret';
+        $password = getenv('REDIS_PASSWORD');
+
+        return is_string($password) && $password !== '' ? $password : null;
     }
 
     private function assertServerRespondsToPing(RedisConfig $config): void
     {
         $redis = new Redis();
         self::assertTrue($redis->connect($config->host, $config->port, $config->timeout));
-        self::assertTrue($redis->auth($config->password ?? ''));
+        if ($config->password !== null) {
+            self::assertTrue($redis->auth($config->password));
+        }
         self::assertTrue($redis->select($config->database ?? 0));
 
         try {
