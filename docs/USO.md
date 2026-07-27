@@ -1,54 +1,104 @@
 # Guia de uso
 
-Cliente Redis opcional, encapsulado e reutilizavel para extensoes do framework Elavora.
+Cliente Redis opcional, encapsulado e reutilizavel para extensoes do framework
+Elavora.
 
 ## Instalacao
 
 ```bash
-composer require elavora/api-redis
+composer require elavora/api-redis:^1.0
 ```
 
-## Quando usar
+Requisitos de runtime:
 
-- Compartilhar conexoes Redis entre cache, fila e outras extensoes.
-- Encapsular `ext-redis` atras de contratos do framework.
-- Reutilizar configuracao de Redis em mais de um pacote.
+- PHP `>=8.3`
+- `ext-redis`
+- `elavora/api-framework` `^1.0`
 
-## Exemplo rapido
+## Registro e conexao
 
 ```php
+use Elavora\Api\Extension\Redis\Contracts\RedisConnectionFactory;
+use Elavora\Api\Extension\Redis\RedisConfig;
+use Elavora\Api\Extension\Redis\RedisExtension;
+use Elavora\Api\Framework\Application;
+
+$application = Application::create();
+$application->extend(new RedisExtension());
+
+$config = RedisConfig::fromArray([
+    'host' => getenv('REDIS_HOST') ?: '127.0.0.1',
+    'port' => getenv('REDIS_PORT') ?: '6379',
+    'timeout' => getenv('REDIS_TIMEOUT') ?: '1.5',
+    'password' => getenv('REDIS_PASSWORD') ?: null,
+    'database' => getenv('REDIS_DATABASE') ?: '0',
+]);
+
+$factory = $application->container()->get(RedisConnectionFactory::class);
+assert($factory instanceof RedisConnectionFactory);
+
+$redis = $factory->connect($config);
+$redis->set('example:key', 'value');
+assert($redis->get('example:key') === 'value');
+$redis->del('example:key');
+```
+
+## Configuracao
+
+`RedisConfig::fromArray()` aceita:
+
+| Opcao | Tipo | Regra |
+| --- | --- | --- |
+| `host` | `string` | Nao vazio |
+| `port` | `int` ou string inteira | Entre 1 e 65535 |
+| `timeout` | `int`, `float` ou string numerica | Finito e maior ou igual a zero |
+| `password` | `string` ou `null` | String vazia equivale a `null` |
+| `database` | `int`, string inteira ou `null` | Maior ou igual a zero |
+
+Tipos diferentes falham antes da conexao. A factory tambem verifica os
+retornos de `connect`, `auth` e `select`. Conexoes incompletas sao descartadas,
+e as mensagens de erro nunca incluem a senha.
+
+## Factory personalizada
+
+Uma factory personalizada implementa o mesmo contrato e pode decorar a
+implementacao nativa:
+
+```php
+use Elavora\Api\Extension\Redis\Contracts\RedisClient;
+use Elavora\Api\Extension\Redis\Contracts\RedisConnectionFactory;
+use Elavora\Api\Extension\Redis\NativeRedisConnectionFactory;
+use Elavora\Api\Extension\Redis\RedisConfig;
 use Elavora\Api\Extension\Redis\RedisExtension;
 
-$application->extend(new RedisExtension([
-    'host' => getenv('REDIS_HOST') ?: '127.0.0.1',
-    'port' => (int) (getenv('REDIS_PORT') ?: 6379),
-]));
+final class CustomRedisConnectionFactory implements RedisConnectionFactory
+{
+    public function __construct(
+        private readonly RedisConnectionFactory $inner = new NativeRedisConnectionFactory()
+    ) {
+    }
+
+    public function connect(RedisConfig $config): RedisClient
+    {
+        return $this->inner->connect($config);
+    }
+}
+
+$application->extend(new RedisExtension(new CustomRedisConnectionFactory()));
 ```
 
-## Principais pontos de entrada
+## Qualidade
 
-- `Elavora\Api\Extension\Redis\NativeRedisClient`
-- `Elavora\Api\Extension\Redis\NativeRedisConnectionFactory`
-- `Elavora\Api\Extension\Redis\RedisConfig`
-- `Elavora\Api\Extension\Redis\RedisConnectionManager`
-- `Elavora\Api\Extension\Redis\RedisExtension`
-
-## Dependencias de runtime
-
-- `ext-redis` `*`
-- `elavora/api-framework` `^0.3.1`
-
-## Validacao no projeto consumidor
-
-Depois de instalar o pacote, rode os testes da aplicacao consumidora. Para uma verificacao isolada do pacote, use container:
+Os comandos nao dependem de Bash, `find` ou `xargs`:
 
 ```bash
-docker run --rm -v "${PWD}:/workspace" -w "/workspace/api-redis" composer:2 composer validate --strict --no-check-publish
-docker run --rm -v "${PWD}:/workspace" -w "/workspace/api-redis" composer:2 sh -lc "find . \\( -path ./.git -o -path ./vendor \\) -prune -o -name '*.php' -print0 | xargs -0 -r -n1 php -l"
+composer validate --strict --no-check-publish
+composer lint
+composer analyse
+composer test
+composer check
 ```
 
-## Observacoes
-
-- Mantenha regras de produto fora deste pacote.
-- Prefira configurar extensoes no bootstrap da aplicacao.
-- Instale apenas os modulos que a aplicacao realmente usa.
+`composer check` executa lint, PHPStan nivel 8 e PHPUnit. A suite de integracao
+usa `REDIS_INTEGRATION=1` e valida conexao, autenticacao, selecao de banco,
+PING no servico de teste, escrita e leitura contra Redis real.
