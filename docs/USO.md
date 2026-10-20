@@ -237,7 +237,7 @@ Os testes rodam no container `ghcr.io/elavora/php-dev:8.3-latest`, que já tem P
 No PowerShell, na pasta do repo:
 
 ```powershell
-docker run --rm -v "${PWD}:/origem" -w /origem ghcr.io/elavora/php-dev:8.3-latest sh -lc "composer validate --strict --no-check-publish && composer update --no-interaction --ignore-platform-req=ext-redis && composer test"
+docker run --rm -v "${PWD}:/origem" -w /origem ghcr.io/elavora/php-dev:8.3-latest sh -lc "git config --global --add safe.directory /origem && composer validate --strict --no-check-publish && composer update --no-interaction --ignore-platform-req=ext-redis && composer test"
 ```
 
 Monte o repo em `/origem`. Não use `/src`.
