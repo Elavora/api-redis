@@ -23,7 +23,7 @@ final class RedisServiceRegistrar
 
         $application->container()->bind(
             RedisConnectionFactory::class,
-            new RedisConnectionManager($factory ?? new NativeRedisConnectionFactory())
+            new RedisConnectionManager($factory ?? new NativeRedisConnectionFactory()),
         );
     }
 }

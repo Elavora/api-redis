@@ -16,9 +16,7 @@ final class RedisExtension implements Extension
     /**
      * @param RedisConnectionFactory|null $factory Factory customizada para Redis.
      */
-    public function __construct(private readonly ?RedisConnectionFactory $factory = null)
-    {
-    }
+    public function __construct(private readonly ?RedisConnectionFactory $factory = null) {}
 
     /**
      * Registra a factory Redis compartilhada.

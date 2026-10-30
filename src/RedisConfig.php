@@ -21,9 +21,8 @@ final class RedisConfig
         public readonly int $port = 6379,
         public readonly float $timeout = 0.0,
         public readonly ?string $password = null,
-        public readonly ?int $database = null
-    ) {
-    }
+        public readonly ?int $database = null,
+    ) {}
 
     /**
      * @param array{host?: string, port?: int|string, timeout?: float|int|string, password?: string|null, database?: int|string|null} $config
@@ -38,7 +37,7 @@ final class RedisConfig
             port: (int) ($config['port'] ?? 6379),
             timeout: (float) ($config['timeout'] ?? 0.0),
             password: $password === null || $password === '' ? null : (string) $password,
-            database: $database === null || $database === '' ? null : (int) $database
+            database: $database === null || $database === '' ? null : (int) $database,
         );
     }
 
