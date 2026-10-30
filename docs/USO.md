@@ -13,8 +13,9 @@ Este guia é a especificação do pacote. Tudo o que um teste precisa saber est�
 | PHP | `>=8.3` |
 | `ext-redis` | `*` |
 
-A `1.0.0` sai pelo PR com label `upgrade`. O workflow `tag_on_merge` sobe o major da
-última tag (`v0.2.0`) e cria `v1.0.0`.
+A `1.0.0` sai do PR único de upgrade e adoção do pipeline central, com as labels `upgrade` e `release`. O fluxo
+central sobe o major da última tag (`v0.2.0`) e cria a `1.0.0` (as tags novas não têm o prefixo `v`). Veja
+[Versões e release](AUTOMACAO.md#versões-e-release).
 
 Pacotes que dependem deste (`elavora/api-cache-redis`, `elavora/api-queue-redis`) devem exigir:
 
@@ -243,7 +244,8 @@ docker run --rm -v "${PWD}:/origem" -w /origem ghcr.io/elavora/php-dev:8.3-lates
 Monte o repo em `/origem`. Não use `/src`.
 
 A imagem não tem `ext-redis`. Por isso o `composer update` usa `--ignore-platform-req=ext-redis`.
-Os testes unitários não usam a classe `Redis`.
+Os testes unitários não usam a classe `Redis`. Para os scripts `composer check`, o CI e a situação do `ext-redis`
+no pipeline central, veja [Desenvolvimento e testes](DESENVOLVIMENTO.md).
 
 ## Observações
 
