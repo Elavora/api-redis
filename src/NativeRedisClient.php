@@ -12,9 +12,7 @@ use Redis;
  */
 final class NativeRedisClient implements RedisClient
 {
-    public function __construct(private readonly Redis $redis)
-    {
-    }
+    public function __construct(private readonly Redis $redis) {}
 
     public function get(string $key): string|false
     {

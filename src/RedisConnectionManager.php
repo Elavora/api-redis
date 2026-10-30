@@ -19,9 +19,8 @@ final class RedisConnectionManager implements RedisConnectionFactory
      * @param RedisConnectionFactory $factory Factory concreta usada ao abrir conexoes novas.
      */
     public function __construct(
-        private readonly RedisConnectionFactory $factory = new NativeRedisConnectionFactory()
-    ) {
-    }
+        private readonly RedisConnectionFactory $factory = new NativeRedisConnectionFactory(),
+    ) {}
 
     /**
      * Retorna um cliente Redis reutilizado para a configuracao informada.
