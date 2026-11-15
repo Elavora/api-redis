@@ -29,12 +29,12 @@ final class ComposerJsonTest extends TestCase
 
     public function testRequiresFrameworkTwo(): void
     {
-        self::assertSame('^2.0', $this->composer['require']['elavora/api-framework'] ?? null);
+        self::assertSame('^3.0', $this->composer['require']['elavora/api-framework'] ?? null);
     }
 
     public function testBranchAliasIsOneDev(): void
     {
-        self::assertSame('1.0-dev', $this->composer['extra']['branch-alias']['dev-main'] ?? null);
+        self::assertSame('2.0-dev', $this->composer['extra']['branch-alias']['dev-main'] ?? null);
     }
 
     public function testAutoloadUnchanged(): void
