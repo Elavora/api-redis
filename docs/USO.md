@@ -10,7 +10,7 @@ Este guia é a especificação do pacote. Tudo o que um teste precisa saber est�
 |---|---|
 | Versão deste pacote | `1.0.0` (primeira versão compatível com o framework 2) |
 | `elavora/api-framework` | `^2.0` |
-| PHP | `>=8.3` |
+| PHP | `>=8.4` |
 | `ext-redis` | `*` |
 
 A `1.0.0` sai do PR único de upgrade e adoção do pipeline central, com as labels `upgrade` e `release`. O fluxo
@@ -30,7 +30,7 @@ continua sendo a última para o framework `^0.3.1`.
 
 O `composer.json` do pacote deve ter:
 
-- `require.php` = `">=8.3"`
+- `require.php` = `">=8.4"`
 - `require.ext-redis` = `"*"`
 - `require.elavora/api-framework` = `"^2.0"`
 - `extra.branch-alias.dev-main` = `"1.0-dev"`
@@ -46,7 +46,7 @@ Para este pacote, quase nada muda no código. O contrato de extensão do framewo
 - O `Container` continua com `has()`, `bind()`, `instance()` e `get()`.
   `get()` guarda o objeto resolvido e devolve a mesma instância nas chamadas seguintes.
 
-A mudança real é de versão: o framework 2 exige PHP 8.3. Por isso este pacote também passa a exigir PHP 8.3.
+A mudança real é de versão: o framework 2 exige PHP 8.4. Por isso este pacote também passa a exigir PHP 8.4.
 
 ### Variáveis de ambiente `REDIS_*`
 
@@ -234,11 +234,11 @@ Exemplos:
 
 ## Validação local
 
-Os testes rodam no container `ghcr.io/elavora/php-dev:8.3-latest`, que já tem PHP 8.3 e Composer.
+Os testes rodam no container `ghcr.io/elavora/php-dev:8.4-latest`, que já tem PHP 8.4 e Composer.
 No PowerShell, na pasta do repo:
 
 ```powershell
-docker run --rm -v "${PWD}:/origem" -w /origem ghcr.io/elavora/php-dev:8.3-latest sh -lc "git config --global --add safe.directory /origem && composer validate --strict --no-check-publish && composer update --no-interaction --ignore-platform-req=ext-redis && composer test"
+docker run --rm -v "${PWD}:/origem" -w /origem ghcr.io/elavora/php-dev:8.4-latest sh -lc "git config --global --add safe.directory /origem && composer validate --strict --no-check-publish && composer update --no-interaction --ignore-platform-req=ext-redis && composer test"
 ```
 
 Monte o repo em `/origem`. Não use `/src`.

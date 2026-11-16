@@ -8,7 +8,7 @@
 
 Cliente Redis opcional, encapsulado e reutilizável para extensões do framework Elavora.
 
-- Versão `1.0.0`: exige `elavora/api-framework` `^3.0`, PHP `>=8.3` e `ext-redis`. Dependentes devem exigir
+- Versão `1.0.0`: exige `elavora/api-framework` `^4.1`, PHP `>=8.4` e `ext-redis`. Dependentes devem exigir
   `"elavora/api-redis": "^1.0"`.
 - Para o framework `^0.3.1`, use a versão `0.2.0`.
 
@@ -41,15 +41,15 @@ A especificação completa (API, normalização, compatibilidade e testes) está
 composer require elavora/api-redis
 ```
 
-Requisitos: PHP 8.3 ou superior, `ext-redis` e `elavora/api-framework` `^3.0`.
+Requisitos: PHP 8.4 ou superior, `ext-redis` e `elavora/api-framework` `^4.1`.
 
 ## Desenvolvimento e testes
 
-Você só precisa de Docker. O ambiente é a imagem `ghcr.io/elavora/php-dev:8.3-latest`: abra o repositório no VS Code
+Você só precisa de Docker. O ambiente é a imagem `ghcr.io/elavora/php-dev:8.4-latest`: abra o repositório no VS Code
 com **Dev Containers: Reopen in Container**, ou rode no PowerShell:
 
 ```powershell
-docker run --rm --mount "type=bind,source=$($PWD.Path),target=/workspace" -w /workspace ghcr.io/elavora/php-dev:8.3-latest sh -lc 'git config --global --add safe.directory /workspace && composer install --no-interaction --prefer-dist --ignore-platform-req=ext-redis && composer check'
+docker run --rm --mount "type=bind,source=$($PWD.Path),target=/workspace" -w /workspace ghcr.io/elavora/php-dev:8.4-latest sh -lc 'git config --global --add safe.directory /workspace && composer install --no-interaction --prefer-dist --ignore-platform-req=ext-redis && composer check'
 ```
 
 A imagem não traz `ext-redis`, por isso o `--ignore-platform-req=ext-redis`. Os testes não precisam da extensão nem de
