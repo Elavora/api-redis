@@ -17,9 +17,9 @@ final class ComposerJsonTest extends TestCase
         $this->composer = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function testRequiresPhp83(): void
+    public function testRequiresPhp84(): void
     {
-        self::assertSame('>=8.3', $this->composer['require']['php'] ?? null);
+        self::assertSame('>=8.4', $this->composer['require']['php'] ?? null);
     }
 
     public function testRequiresExtRedis(): void
@@ -29,12 +29,12 @@ final class ComposerJsonTest extends TestCase
 
     public function testRequiresFrameworkTwo(): void
     {
-        self::assertSame('^3.0', $this->composer['require']['elavora/api-framework'] ?? null);
+        self::assertSame('^4.1', $this->composer['require']['elavora/api-framework'] ?? null);
     }
 
     public function testBranchAliasIsOneDev(): void
     {
-        self::assertSame('2.0-dev', $this->composer['extra']['branch-alias']['dev-main'] ?? null);
+        self::assertSame('3.0-dev', $this->composer['extra']['branch-alias']['dev-main'] ?? null);
     }
 
     public function testAutoloadUnchanged(): void
