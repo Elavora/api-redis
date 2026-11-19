@@ -8,7 +8,7 @@
 
 Cliente Redis opcional, encapsulado e reutilizável para extensões do framework Elavora.
 
-- Versão `1.0.0`: exige `elavora/api-framework` `^4.1`, PHP `>=8.4` e `ext-redis`. Dependentes devem exigir
+- Versão `1.0.0`: exige `elavora/api-framework` `^4.1 || ^5.0 || ^6.0`, PHP `>=8.4` e `ext-redis`. Dependentes devem exigir
   `"elavora/api-redis": "^1.0"`.
 - Para o framework `^0.3.1`, use a versão `0.2.0`.
 
@@ -41,7 +41,7 @@ A especificação completa (API, normalização, compatibilidade e testes) está
 composer require elavora/api-redis
 ```
 
-Requisitos: PHP 8.4 ou superior, `ext-redis` e `elavora/api-framework` `^4.1`.
+Requisitos: PHP 8.4 ou superior, `ext-redis` e `elavora/api-framework` `^4.1 || ^5.0 || ^6.0`.
 
 ## Desenvolvimento e testes
 
