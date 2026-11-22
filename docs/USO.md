@@ -126,6 +126,8 @@ Operações de lista para quem precisa mover itens entre listas com segurança (
 `elavora/api-queue-redis`). É uma interface **à parte**: `RedisClient` não mudou, então quem já implementa
 `RedisClient` continua válido. Quem consome checa o suporte com `$client instanceof RedisListOperations`.
 
+A interface existe desde a versão `3.1.0`. Use a constraint `^3.1` quando o seu código depender dela.
+
 | Método | Retorno | O que faz |
 |---|---|---|
 | `lPush(string $key, string $value)` | `int\|false` | Adiciona no início da lista. Devolve o novo tamanho. |
