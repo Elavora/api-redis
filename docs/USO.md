@@ -120,6 +120,22 @@ Cliente usado pelas extensões. Os dependentes programam contra esta interface.
 A interface não muda na `1.0.0`. Uma classe de teste que implementa estes seis métodos com essas
 assinaturas deve continuar válida.
 
+### `Contracts\RedisListOperations` (interface, estende `RedisClient`)
+
+Operações de lista para quem precisa mover itens entre listas com segurança (por exemplo, filas com confirmação, como o
+`elavora/api-queue-redis`). É uma interface **à parte**: `RedisClient` não mudou, então quem já implementa
+`RedisClient` continua válido. Quem consome checa o suporte com `$client instanceof RedisListOperations`.
+
+| Método | Retorno | O que faz |
+|---|---|---|
+| `lPush(string $key, string $value)` | `int\|false` | Adiciona no início da lista. Devolve o novo tamanho. |
+| `lMove(string $source, string $destination, string $from, string $to)` | `string\|false` | Remove um item de `$source` e o adiciona em `$destination`, em uma única operação atômica (`LMOVE`, Redis 6.2 ou superior). `$from` e `$to` são `'LEFT'` ou `'RIGHT'` (sem diferenciar maiúsculas) e dizem de que ponta sai e em que ponta entra. Devolve o item movido, ou `false` se `$source` está vazia. |
+| `lRem(string $key, string $value, int $count)` | `int\|false` | Remove até `$count` ocorrências de `$value` a partir do início da lista (`$count` = `0` remove todas). Devolve quantas removeu. |
+| `lRange(string $key, int $start, int $stop)` | `list<string>\|false` | Devolve os itens entre os índices (`0` a `-1` é a lista toda). Lista inexistente devolve lista vazia. |
+
+`lMove()` com `$from` ou `$to` diferente de `'LEFT'` e `'RIGHT'` lança `InvalidArgumentException` com a mensagem
+`A direcao deve ser LEFT ou RIGHT.`, antes de falar com o Redis.
+
 ### `Contracts\RedisConnectionFactory` (interface)
 
 ```php
@@ -194,10 +210,12 @@ Exemplo: com uma factory que conta chamadas,
 
 Esta classe precisa de um Redis real. Não faz parte dos testes unitários.
 
-### `NativeRedisClient` (classe final, implementa `RedisClient`)
+### `NativeRedisClient` (classe final, implementa `RedisClient` e `RedisListOperations`)
 
-Adapter fino sobre `\Redis`. Recebe a instância no construtor e repassa cada método.
-Também precisa de Redis real e fica fora dos testes unitários.
+Adapter fino sobre `\Redis`. Recebe a instância no construtor e repassa cada método, inclusive as operações de lista
+(`lPush`, `lMove`, `lRem`, `lRange`). `lMove()` valida a direção e chama `\Redis::lMove()` com a direção em minúsculas,
+como o `ext-redis` espera. O `lMove` exige `ext-redis` 6.0 ou superior.
+Também precisa de Redis real para rodar de verdade; os testes unitários só conferem o repasse com um `\Redis` simulado.
 
 ### `RedisServiceRegistrar` (classe final)
 
